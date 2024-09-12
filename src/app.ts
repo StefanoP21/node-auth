@@ -1,3 +1,4 @@
+import { envs } from './config';
 import { Server } from './presentation/server';
 
 (() => {
@@ -8,6 +9,5 @@ async function main() {
   //TODO: connect database
 
   //TODO: start server
-  const server = new Server({});
-  server.start();
+  new Server({ port: envs.PORT }).start();
 }
