@@ -1,3 +1,5 @@
+import { BcryptAdapter } from '../../config';
+import { UserModel } from '../../data/mongodb';
 import {
   AuthDatasource,
   CustomError,
@@ -11,7 +13,18 @@ export class AuthDatasourceImpl implements AuthDatasource {
     const { name, email, password } = registerUserDto;
 
     try {
-      return new UserEntity('1', name, email, password, ['ADMIN']);
+      const userExists = await UserModel.findOne({ email });
+      if (userExists) throw CustomError.conflict('User already exists');
+
+      const hashedPassword = BcryptAdapter.hash(password);
+
+      const user = await UserModel.create({
+        name,
+        email,
+        password: hashedPassword,
+      });
+
+      return new UserEntity(user.id, name, email, user.password, user.role);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
