@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtAdapter } from '../../config';
+import { UserModel } from '../../data/mongodb';
 
 export class AuthMidldleware {
   static validateJwt = async (
@@ -18,7 +19,10 @@ export class AuthMidldleware {
       const payload = await JwtAdapter.verifyToken<{ email: string }>(token);
       if (!payload) return res.status(401).json({ error: 'Unauthorized' });
 
-      req.body.token = payload;
+      const user = await UserModel.findOne({ email: payload.email });
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+
+      req.body.user = user;
 
       next();
     } catch (error) {

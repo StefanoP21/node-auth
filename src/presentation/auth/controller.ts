@@ -38,8 +38,8 @@ export class AuthController {
     const users = await UserModel.find();
 
     res.json({
-      users,
-      token: req.body.token,
+      // users,
+      user: req.body.user,
     });
   };
 }
