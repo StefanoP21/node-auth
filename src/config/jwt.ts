@@ -17,7 +17,7 @@ export class JwtAdapter {
     });
   }
 
-  static async verifyToken(token: string) {
+  static async verifyToken<T>(token: string): Promise<T> {
     return new Promise((resolve) => {
       jwt.verify(token, 'SEED', (err, token) => {
         if (err) {
@@ -25,7 +25,7 @@ export class JwtAdapter {
           throw new Error('Error verifying token');
         }
 
-        resolve(token);
+        resolve(token as T);
       });
     });
   }

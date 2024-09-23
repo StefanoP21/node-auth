@@ -15,7 +15,7 @@ export class AuthMidldleware {
     const token = authorization.split(' ').at(1) || '';
 
     try {
-      const payload = await JwtAdapter.verifyToken(token);
+      const payload = await JwtAdapter.verifyToken<{ email: string }>(token);
       if (!payload) return res.status(401).json({ error: 'Unauthorized' });
 
       req.body.token = payload;
