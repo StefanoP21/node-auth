@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthRepository, CustomError, RegisterUserDto } from '../../domain';
 import { JwtAdapter } from '../../config';
+import { UserModel } from '../../data/mongodb';
 
 export class AuthController {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -31,5 +32,14 @@ export class AuthController {
 
   loginUser = (req: Request, res: Response) => {
     res.json('login constroller');
+  };
+
+  getUsers = async (req: Request, res: Response) => {
+    const users = await UserModel.find();
+
+    res.json({
+      users,
+      token: req.body.token,
+    });
   };
 }
