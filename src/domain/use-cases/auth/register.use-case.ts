@@ -18,7 +18,7 @@ type SignToken = (
 ) => Promise<unknown>;
 
 interface RegisterUseCase {
-  execute(RegisterUserDto: RegisterUserDto): Promise<UserToken>;
+  execute(registerUserDto: RegisterUserDto): Promise<UserToken>;
 }
 
 export class RegisterUser implements RegisterUseCase {

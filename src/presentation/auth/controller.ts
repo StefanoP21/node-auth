@@ -2,8 +2,10 @@ import { Request, Response } from 'express';
 import {
   AuthRepository,
   CustomError,
+  LoginUserDto,
   RegisterUser,
   RegisterUserDto,
+  LoginUser,
 } from '../../domain';
 import { UserModel } from '../../data/mongodb';
 
@@ -30,7 +32,13 @@ export class AuthController {
   };
 
   loginUser = (req: Request, res: Response) => {
-    res.json('login constroller');
+    const [error, loginUserDto] = LoginUserDto.create(req.body);
+    if (error) return res.status(400).json({ error });
+
+    new LoginUser(this.authRepository)
+      .execute(loginUserDto!)
+      .then((data) => res.json(data))
+      .catch((error) => this.handleError(error, res));
   };
 
   getUsers = async (req: Request, res: Response) => {
