@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
-import { AuthRepository, CustomError, RegisterUserDto } from '../../domain';
-import { JwtAdapter } from '../../config';
+import {
+  AuthRepository,
+  CustomError,
+  RegisterUser,
+  RegisterUserDto,
+} from '../../domain';
 import { UserModel } from '../../data/mongodb';
 
 export class AuthController {
@@ -19,14 +23,9 @@ export class AuthController {
     const [error, registerUserDto] = RegisterUserDto.create(req.body);
     if (error) return res.status(400).json({ error });
 
-    this.authRepository
-      .registerUser(registerUserDto!)
-      .then(async (user) =>
-        res.json({
-          user,
-          token: await JwtAdapter.generateToken({ email: user.email }),
-        })
-      )
+    new RegisterUser(this.authRepository)
+      .execute(registerUserDto!)
+      .then((data) => res.json(data))
       .catch((error) => this.handleError(error, res));
   };
 
